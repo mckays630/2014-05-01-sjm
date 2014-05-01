@@ -38,7 +38,7 @@ You have a tab-delimited text file, gene_exp.txt that contains data from a diffe
 
 #### Step one, investigate  the file 
 
-What is the file structure? Without options, **head** will print the top 10 lines of the file
+What is the file structure? Without options, ***head*** will print the top 10 lines of the file
 
 <pre>
 $ head  gene_exp.txt
