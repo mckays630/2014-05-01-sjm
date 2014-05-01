@@ -54,6 +54,16 @@ AT1G01070	WT	hy5	NOTEST	1.24918	2.41377	no
 AT1G01073	WT	hy5	NOTEST	0	0	no
 </pre>
 
-The header line describes the columns for us.  WE can use this to help answer some questions.
+The header line describes the columns for us.  We can use this to help answer some questions.
+
+#### How many records are there in the file?
+
+We can use ***wc -l*** to count the lines
+
+<pre>
+$ wc -l gene_exp.txt 
+   33567 gene_exp.txt
+</pre>
+
 
 
