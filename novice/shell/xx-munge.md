@@ -10,7 +10,7 @@ In many fields, you will encounter data stored in text files.  For complex text 
 
 ### Objective
 
-Learn to use a simple set of unix command line tools to to quick and dirty data extraction from commonly encountered tect file types.
+Learn to use a simple set of unix command line tools to to quick and dirty data extraction from commonly encountered text file types.
 
 ### Level
 
