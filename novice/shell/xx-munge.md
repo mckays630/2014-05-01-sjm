@@ -36,7 +36,7 @@ This is a list of a few command that we will use in the examples below.
 
 You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis.  Each line describes a comparison of numerical expression levels for one gene in two samples.
 
-#### Step one, investigate  the file 
+#### Investigatethe file 
 
 What is the file structure? Without options, ***head*** will print the top 10 lines of the file
 
@@ -141,7 +141,7 @@ XLOC_032942
 
 And we have our answer!
 
-### Example 2: quick and dirty web log analysis.
+### Example Two: quick and dirty web log analysis.
 
 Suppose you are an admin on a high traffic web server and you are getting user complaints about the web site being very slow.  You check the database logs and find that there has been a spike in web traffic since about 11AM.  How can you check the apache access log to see what is going on?
 
@@ -149,14 +149,14 @@ Consider the log file access_log.  The exact format of the file can be customize
 
 Your task is to find the top 10 users of the web site over the past hour.
 
-How many lines in the file?
+#### How many lines in the file (ie, how many times was the web site accesses in the time perdio covered by this file)?
 
 <pre>
 $ wc -l access_log 
     37554 access_log
 </pre>
 
-What does the file look like?
+#### What does the log file look like?
 
 <pre>
 $ head -5 access_log 
@@ -169,14 +169,16 @@ $ head -5 access_log
 
 Not much to look at but we can see that the IP address of the browser is the first part of the record and that consistent time stamps are used.
 
-It is 12 noon, April 7, 2014.  Isolate the records for the past hour.  What time does the log file end at?
+#### It is 12 noon, April 7, 2014.  Isolate the records for the past hour.  
+
+What time does the log file end?
 
 <pre>
 $ tail -1 access_log
 adsl-4.46.190.51.tellas.gr - - [07/Apr/2014:11:59:57 -0400] "GET /cgi-bin/images/search.gif HTTP/1.1" 404 301
 </pre>
 
-OK, it ends at noon.  We just need to know what line number should we start at.  Use ***grep*** to find the first line that start as 11AM.
+It ends at noon.  We just need to know what line number should we start at.  Use ***grep*** to find the first line that start as 11AM.
 
 <pre>
 $ grep -n '07/Apr/2014:11:00' access_log | head -1
@@ -190,7 +192,11 @@ $ tail -3974 access_log | head -1
 146.185.30.53 - - [07/Apr/2014:11:00:03 -0400] "GET /cgi-bin/instancebrowser?DB=gk_current&ID=109581 HTTP/1.1" 200 68805
 </pre>
 
-Now we have the text isolated.  Who is accessing the site and how often?  Remember that the first section of each line is the the address of the browser.  The file is not tab-delimited, but we can use the ***-d' '*** argument for ***cut*** to tell it to use space as the delimiter.
+Now we have the text isolated.  
+
+#### Who is accessing the site and how often?  
+
+Remember that the first section of each line is the the address of the browser.  The file is not tab-delimited, but we can use the ***-d' '*** argument for ***cut*** to tell it to use space as the delimiter.
 
 Let's check first:
 
@@ -240,7 +246,9 @@ $ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | head
    1 206.83.48.110
 </pre>
 
-This is better but remember that we need the top 10 users only.  We can do this by another round of sorting.
+
+# Who are the the ten users between 11-12?
+We can find out by another round of sorting at the end.
 
 <pre>
 $ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | sort -nr | head
