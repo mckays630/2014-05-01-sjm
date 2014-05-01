@@ -16,10 +16,13 @@ Learn to use a simple set of unix command line tools to to quick and dirty data 
 
 This is a list of command we will use in the examples below.  There are many others.
 
-* **grep** -- *Search for patterns in text*
-* **sort** -- *For ordering of lines in text*
-* **head** -- *Print the top N lines of text*
-* **tail** -- *Print the bottom N lines of text*
+**grep** -- *searches for patterns in text*
+
+**sort** -- *orders lines in text*
+
+**head** -- *prints the top N lines of text*
+
+**tail** -- *prints the bottom N lines of text*
 
 
 
