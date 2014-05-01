@@ -32,17 +32,28 @@ This is a list of a few command that we will use in the examples below.
 </table>
 
 
-#### Filtering
+### Example One
 
-Select only data meeting a condition:
+You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis
 
-    SELECT * FROM table_name WHERE column_name > 0;
+#### Step one, investigate  the file 
 
+What is the file structure? Without options, **head** will print the top 10 lines of the file
 
-#### Missing Data
+<pre>
+$ head  gene_exp.txt
+gene	sample_1	sample_2	status	value_1	value_2	significant
+AT1G01010	WT	hy5	NOTEST	0	1.49367	no
+AT1G01020	WT	hy5	NOTEST	7.27837	10.7195	no
+AT1G01030	WT	hy5	NOTEST	1.18638	1.10483	no
+AT1G01040	WT	hy5	NOTEST	0.239843	2.24208	no
+AT1G01046	WT	hy5	NOTEST	0	0	no
+AT1G01050	WT	hy5	OK	9.06975	23.5089	yes
+AT1G01060	WT	hy5	NOTEST	4.04534	6.46964	no
+AT1G01070	WT	hy5	NOTEST	1.24918	2.41377	no
+AT1G01073	WT	hy5	NOTEST	0	0	no
+</pre>
 
+The header line describes the columns for us.  WE can use this to help answer some questions.
 
-Test whether a value is null:
-
-    SELECT * FROM table_name WHERE column_name IS NULL;
 
