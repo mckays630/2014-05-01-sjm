@@ -13,22 +13,23 @@ In many fields, you will encounter data stored in text files.  For complex text 
 Learn to use a simple set of unix command line tools to to quick and dirty data extraction from commonly encountered tect file types.
 
 ### Level
-This is a novice-to-intermediate level lesson.  It is assumed that you know the unix command line basic and have seen some of the commands used below before.
+
+This is a novice-to-intermediate level lesson.  It is assumed that you know the unix command line basics.
 
 ### Your toolkit
 
 This is a list of a few command that we will use in the examples below. 
 
 <table>
-  <tr><th>grep</th><td><i>searches for patterns in text</td></tr>
-  <tr><th>sort</th><td><i>orders lines in text</td></tr>
-  <tr><th>head</th><td><i>prints the top N lines of text</td></tr>
-  <tr><th>tail</th><td><i>report or filters repeated lines of text</td></tr>
-  <tr><th>uniq</th><td><i>orders lines in text</td></tr>
-  <tr><th>|</th><td><i>used to string together the inputs/outputs of a series of commands</td></tr>
+  <tr><th>|</th><td><i>strings together the inputs/outputs of a series of commands</i></td></tr>
+  <tr><th>grep</th><td><i>searches for patterns in text</i></td></tr>
+  <tr><th>sort</th><td><i>orders lines in text</i></td></tr>
+  <tr><th>head</th><td><i>prints the top N lines of text</i></td></tr>
+  <tr><th>tail</th><td><i>prints the bottom N lines of text</i></td></tr>
+  <tr><th>uniq</th><td><i>reports or filters repeated lines of text</i></td></tr>
+  <tr><th>wc</th><td><i>counts words, characters or lines</i></td></tr>
+  <tr><th>bc</th><td><i>does simple math on the command line</i></td></tr>
 </table>
-
-
 
 
 #### Filtering
