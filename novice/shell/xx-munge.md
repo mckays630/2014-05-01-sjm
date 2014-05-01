@@ -14,9 +14,13 @@ Learn to use a simple set of unix command line tools to to quick and dirty data 
 
 ### Your toolkit
 
-_Subject_ __Hello__ World!
+This is a list of command we will use in the examples below.  There are many others.
 
-    $ code 1 $hello;
+* **grep** -- *Search for patterns in text*
+* **sort** -- *For ordering of lines in text*
+* **head** -- *Print the top N lines of text*
+* **tail** -- *Print the bottom N lines of text*
+
 
 
 
