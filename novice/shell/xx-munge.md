@@ -32,9 +32,9 @@ This is a list of a few command that we will use in the examples below.
 </table>
 
 
-### Example One
+### Example One: gene expression data
 
-You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis
+You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis.  Each line describes a comparison of numerical expression levels for one gene in two samples.
 
 #### Step one, investigate  the file 
 
@@ -54,7 +54,7 @@ AT1G01070	WT	hy5	NOTEST	1.24918	2.41377	no
 AT1G01073	WT	hy5	NOTEST	0	0	no
 </pre>
 
-The header line describes the columns for us.  We can use this to help answer some questions.
+The header line describes the columns for us.  We can use this to help answer some questions.  Note that ***sort*** and ***cut*** assume that the columns in each row are tab-delimited.
 
 #### How many records are there in the file?
 
@@ -66,4 +66,194 @@ $ wc -l gene_exp.txt
 </pre>
 
 
+#### How many genes have enough data to perform the comparison (OK status), how many had significantly different expression levels?
 
+We can search for *OK* and *yes* in the file, then count how many lines are returned by ***grep***.  Note the use of ***|***.  ***wc -l*** is acting on the text printed by ***grep***, not the input file.
+
+<pre>
+$ grep OK gene_exp.txt | wc -l
+    4112
+$ grep yes gene_exp.txt | wc -l
+    1403
+</pre>
+
+So, for 33,567 genes, 4112 had enough data to do a comparison and 1,403 had significantly different expression.
+
+#### What are the 20 genes with the highest expression levels in sample 1 and differ significantly from sample2?
+
+We can use grep to get the 'yes' lines, then use ***sort*** to order the lines base on the numeric values in column 5 (value_1).  We pipe the output to ***head*** so we just look at the top 10 lines for now.  The ***k5*** argument means sort on column (key) 5.
+
+<pre>
+$ grep 'yes' gene_exp.txt | sort -k5n | head
+AT1G40125	WT	hy5	OK	0	15.3962	yes
+AT1G42040	WT	hy5	OK	0	23.5267	yes
+AT1G42050	WT	hy5	OK	0	31.0539	yes
+AT2G05915	WT	hy5	OK	0	61.649	yes
+AT2G40802	WT	hy5	OK	0	551.414	yes
+AT3G01345	WT	hy5	OK	0	29.1111	yes
+AT3G22235	WT	hy5	OK	0	14.7018	yes
+AT3G33073	WT	hy5	OK	0	18.2451	yes
+AT3G42720	WT	hy5	OK	0	19.4265	yes
+AT4G06530	WT	hy5	OK	0	20.3433	yes
+</pre>
+
+Note the the values in column 5 are all zeros.  We are not quite there yet.  We can use the ***r*** flag for sort for descending order.
+
+<pre>
+$ grep 'yes' gene_exp.txt | sort -k5nr | head
+AT2G01021	WT	hy5	OK	282360	3.44931e+06	yes
+AT1G08115	WT	hy5	OK	69434.3	35118.3	yes
+ATCG00010	WT	hy5	OK	51851.7	23458.4	yes
+ATCG00400	WT	hy5	OK	27712.3	2078	yes
+AT5G41471	WT	hy5	OK	27289.6	3739.15	yes
+XLOC_013786	WT	hy5	OK	24253.8	2509.04	yes
+ATCG00630	WT	hy5	OK	22883.4	5164.64	yes
+AT3G24615	WT	hy5	OK	13744.4	4184.12	yes
+AT4G39363	WT	hy5	OK	11180.5	2136.42	yes
+AT3G06895	WT	hy5	OK	9823.28	2143.76	yes
+</pre>
+
+OK, now we have the 10 most abundant genes in sample1.  However, the question was "What are the 20 genes with the highest expression levels in sample 1...".  We can get the top 20 by adding the ***-20*** flag to ***head***.  Note that we were asked for the gene, not the gene plus data.  We can use ***cut*** to extract what we want.  The ***-f1*** arument tor ***cut*** tells it to grab the first column.
+
+<pre>
+$ grep 'yes' gene_exp.txt | sort -k5nr | head -20 | cut -f1
+AT2G01021
+AT1G08115
+ATCG00010
+ATCG00400
+AT5G41471
+XLOC_013786
+ATCG00630
+AT3G24615
+AT4G39363
+AT3G06895
+XLOC_008330
+ATCG00700
+ATCG00390
+AT3G41768
+AT1G29930
+AT1G79040
+XLOC_001625
+AT1G67090
+AT3G56020
+XLOC_032942
+</pre>
+
+And we have our answer!
+
+### Example 2: quick and dirty web log analysis.
+
+Suppose you are an admin on a high traffic web server and you are getting user complaints about the web site being very slow.  You check the database logs and find that there has been a spike in web traffic since about 11AM.  How can you check the apache access log to see what is going on?
+
+Consider the log file access_log.  The exact format of the file can be customized in the web server configuration. The file contents are never pretty.
+
+Your task is to find the top 10 users of the web site over the past hour.
+
+How many lines in the file?
+
+<pre>
+$ wc -l access_log 
+    37554 access_log
+</pre>
+
+What does the file look like?
+
+<pre>
+$ head -5 access_log 
+221.0.112.219 - - [07/Apr/2014:00:00:00 -0400] "GET /download/current/sql.gz HTTP/1.1" 200 63833565
+58.95.175.121 - - [07/Apr/2014:00:00:11 -0400] "GET / HTTP/1.1" 200 22495
+112.249.80.13 - - [07/Apr/2014:00:00:39 -0400] "HEAD /download/current/sql.gz HTTP/1.1" 200 -
+165.246.204.254 - - [07/Apr/2014:00:01:23 -0400] "GET /ReactomeRESTfulAPI/RESTfulWS/queryById/Pathway/5388356 HTTP/1.1" 200 489
+165.246.204.254 - - [07/Apr/2014:00:01:28 -0400] "POST /ReactomeRESTfulAPI/RESTfulWS/queryByIds/DatabaseObject HTTP/1.1" 200 490
+</pre>
+
+Not much to look at but we can see that the IP address of the browser is the first part of the record and that consistent time stamps are used.
+
+It is 12 noon, April 7, 2014.  Isolate the records for the past hour.  What time does the log file end at?
+
+<pre>
+$ tail -1 access_log
+adsl-4.46.190.51.tellas.gr - - [07/Apr/2014:11:59:57 -0400] "GET /cgi-bin/images/search.gif HTTP/1.1" 404 301
+</pre>
+
+OK, it ends at noon.  We just need to know what line number should we start at.  Use ***grep*** to find the first line that start as 11AM.
+
+<pre>
+$ grep -n '07/Apr/2014:11:00' access_log | head -1
+33580:66.249.74.215 - - [07/Apr/2014:11:00:02 -0400] "GET /img-tmp/650.4537338364293990.png HTTP/1.1" 404 308
+</pre>
+
+OK, the first line for the past hour is 33580.  How can we isolate only records from line 33580 and below?  We know the file has  37554 lines.  We can use ***bc*** and ***tail*** to get the lines we need.  For the first pass we will use ***head -1*** to make the the first line is the one we want.
+
+<pre>
+$ tail -3974 access_log | head -1 
+146.185.30.53 - - [07/Apr/2014:11:00:03 -0400] "GET /cgi-bin/instancebrowser?DB=gk_current&ID=109581 HTTP/1.1" 200 68805
+</pre>
+
+Now we have the text isolated.  Who is accessing the site and how often?  Remember that the first section of each line is the the address of the browser.  The file is not tab-delimited, but we can use the ***-d' '*** argument for ***cut*** to tell it to use space as the delimiter.
+
+Let's check first:
+
+<pre>
+$ tail -3974 access_log | cut -d' ' -f1 |head
+146.185.30.53
+5.10.83.18
+90.83.115.106
+90.83.115.106
+90.83.115.106
+90.83.115.106
+90.83.115.106
+90.83.115.106
+90.83.115.106
+90.83.115.106
+</pre>
+
+Looks good.  Now, how to we count the number of times each address occurs in the log?  ***uniq -c *** can report repeated lines.
+
+<pre>
+$ tail -3974 access_log | cut -d' ' -f1 |uniq -c |head 
+   1 146.185.30.53
+   1 5.10.83.18
+   9 90.83.115.106
+   1 mail.decharenton.fr
+   4 90.83.115.106
+   1 5.10.83.36
+   1 5.10.83.40
+  29 88.159.161.40
+  16 14.98.38.62
+   1 se-bravo.psycho.unibas.ch
+</pre>
+
+...but some of the addresses are listed more than once.  Let's try sorting before ***uniq***.
+
+<pre>
+$ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | head 
+   2 223.87.29.50
+   1 217.69.133.232
+  46 216.99.65.83
+  24 213.1.212.91
+   2 212.189.216.198
+   1 211.136.10.53
+   4 209.37.248.167
+   3 208.115.113.86
+  10 207.162.51.5
+   1 206.83.48.110
+</pre>
+
+This is better but remember that we need the top 10 users only.  We can do this by another round of sorting.
+
+<pre>
+$ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | sort -nr | head
+ 349 mrcbloxx.le.ac.uk
+ 270 se-bravo.psycho.unibas.ch
+ 256 hx-dnat-245.ebi.ac.uk
+ 190 193.63.220.131
+ 141 143.169.236.220
+ 129 77.125.74.117
+ 116 spelman-fw.spelman.edu
+ 105 91.103.43.50
+ 101 155.250.255.141
+  99 hx-dnat-249.ebi.ac.uk
+</pre>
+
+Now that we know who is using the site most heavily, we can do some more directed searching, based on the addresses, to see what part of the web site they are hitting.
