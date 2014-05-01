@@ -18,7 +18,7 @@ This is a novice-to-intermediate level lesson.  It is assumed that you know the 
 
 ### Your toolkit
 
-This is a list of a few command that we will use in the examples below. 
+This is a list of a few commands that we will use in the examples below. 
 
 <table>
   <tr><th>|</th><td><i>strings together the inputs/outputs of a series of commands</i></td></tr>
@@ -36,7 +36,7 @@ This is a list of a few command that we will use in the examples below.
 
 You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis.  Each line describes a comparison of numerical expression levels for one gene in two samples.
 
-#### Investigatethe file 
+#### What does the file look like 
 
 What is the file structure? Without options, ***head*** will print the top 10 lines of the file
 
@@ -54,7 +54,7 @@ AT1G01070	WT	hy5	NOTEST	1.24918	2.41377	no
 AT1G01073	WT	hy5	NOTEST	0	0	no
 </pre>
 
-The header line describes the columns for us.  We can use this to help answer some questions.  Note that ***sort*** and ***cut*** assume that the columns in each row are tab-delimited.
+This is a well-formatted, tab-delimited text file.  The header line describes the columns for us.  We can use this to help answer some questions.  Note that ***sort*** and ***cut*** assume that the columns in each row are tab-delimited.
 
 #### How many records are there in the file?
 
@@ -66,7 +66,7 @@ $ wc -l gene_exp.txt
 </pre>
 
 
-#### How many genes have enough data to perform the comparison (OK status), how many had significantly different expression levels?
+#### How many genes have enough data to perform the comparison (have 'OK' status)? How many had significantly different expression levels between samples?
 
 We can search for *OK* and *yes* in the file, then count how many lines are returned by ***grep***.  Note the use of ***|***.  ***wc -l*** is acting on the text printed by ***grep***, not the input file.
 
@@ -77,11 +77,12 @@ $ grep yes gene_exp.txt | wc -l
     1403
 </pre>
 
-So, for 33,567 genes, 4112 had enough data to do a comparison and 1,403 had significantly different expression.
+For 33,567 genes, 4,112 had enough data to do a comparison and 1,403 had significantly different expression.
 
-#### What are the 20 genes with the highest expression levels in sample 1 and differ significantly from sample2?
 
-We can use grep to get the 'yes' lines, then use ***sort*** to order the lines base on the numeric values in column 5 (value_1).  We pipe the output to ***head*** so we just look at the top 10 lines for now.  The ***k5*** argument means sort on column (key) 5.
+#### What are the 20 genes with the highest expression levels in sample 1 and differ significantly between samples?
+
+We can use ***grep*** to get the 'yes' lines, then use ***sort*** to order the lines base on the numeric values in column 5 (value_1).  We pipe the output to ***head*** so we just look at the top 10 lines for now.  The ***k5*** argument means sort on column (key) 5.
 
 <pre>
 $ grep 'yes' gene_exp.txt | sort -k5n | head
