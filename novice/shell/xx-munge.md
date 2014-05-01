@@ -4,11 +4,12 @@ root: ../..
 title: SQL Reference
 ---
 
-#### Basic Queries
+#### Objective
 
-Select one or more columns from a table:
+#### Topic 1
 
-    SELECT column_name_1, column_name_2 FROM table_name;
+Subject1
+ code 1 $hello;
 
 Select all columns from a table:
 
