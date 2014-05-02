@@ -14,7 +14,7 @@ Learn to use a simple set of unix command line tools for "quick and dirty" data 
 
 ### Level
 
-This is a novice-to-intermediate level lesson.  It is assumed that you know the unix command line basics.
+This is a novice-to-intermediate level lesson.  It is assumed that you know the unix command line basics and have seen a few of the commands before.
 
 ### Your toolkit
 
@@ -34,7 +34,7 @@ This is a list of a few commands that we will use in the examples below.
 
 ### Example One: gene expression data
 
-You have a tab-delimited text file, gene_exp.txt that contains data from a differential gene expression analysis.  Each line describes a comparison of numerical expression levels for one gene in two samples.
+You have a tab-delimited text file, gene_exp.txt, that contains data from a differential gene expression analysis.  Each line describes a comparison of numerical expression levels for one gene in two samples.
 
 #### What does the file look like 
 
@@ -80,12 +80,29 @@ $ grep yes gene_exp.txt | wc -l
 For 33,567 genes, 4,112 had enough data to do a comparison and 1,403 had significantly different expression.
 
 
-#### What are the 20 genes with the highest expression levels in sample 1 and differ significantly between samples?
+### Question:  What is the strings *yes* or *OK* appear in other free-text columns of the file?  
 
-We can use ***grep*** to get the 'yes' lines, then use ***sort*** to order the lines base on the numeric values in column 5 (value_1).  We pipe the output to ***head*** so we just look at the top 10 lines for now.  The ***k5*** argument means sort on column (key) 5.
+This sort of thing happens all the time in real life!  We can use ***cut*** to remove the normal column (for example, column 7 for 'yes').  Remove column 7, then search for *yes*.
 
 <pre>
-$ grep 'yes' gene_exp.txt | sort -k5n | head
+$ cut -f1-6 gene_exp.txt | grep yes
+</pre>
+
+No results.  That is good.  For *OK* we need to search all columns except column 4:
+
+<pre>
+cut -f1-3,5-7 gene_exp.txt | grep OK
+</pre>
+
+No results.  The file is good.  Note that the ***-k*** argument could also have been expressed as ***-k1,2,3,5,6,7***
+
+
+#### What are the 20 genes with the highest expression levels in sample 1 and differ significantly between samples?
+
+We can use ***grep*** to get the 'yes' lines, then use ***sort*** to order the lines base on the numeric values in column 5 (value_1).  We pipe the output to ***head*** so we just look at the top 10 lines for now.  The ***k5*** argument means sort on column (key) 5; ***-n*** means sort numerically.  
+
+<pre>
+$ grep 'yes' gene_exp.txt | sort -k5 -n | head
 AT1G40125	WT	hy5	OK	0	15.3962	yes
 AT1G42040	WT	hy5	OK	0	23.5267	yes
 AT1G42050	WT	hy5	OK	0	31.0539	yes
@@ -98,10 +115,16 @@ AT3G42720	WT	hy5	OK	0	19.4265	yes
 AT4G06530	WT	hy5	OK	0	20.3433	yes
 </pre>
 
-Note the the values in column 5 are all zeros.  We are not quite there yet.  We can use the ***r*** flag for sort for descending order.
+You may have noticed that cut and sort use different argumants for the same thing (column number).  The collection of tools in unix-like operating systems evolved over time from a variety of sources and authors, so their command line argumants are not always consistent.  If in doubt:
 
 <pre>
-$ grep 'yes' gene_exp.txt | sort -k5nr | head
+man cut
+</pre>
+
+Note the the values in column 5 above are all zeros.  We are not quite there yet.  We can use the ***r*** flag to sort in descending order.
+
+<pre>
+$ grep 'yes' gene_exp.txt | sort -k5 -n -r | head
 AT2G01021	WT	hy5	OK	282360	3.44931e+06	yes
 AT1G08115	WT	hy5	OK	69434.3	35118.3	yes
 ATCG00010	WT	hy5	OK	51851.7	23458.4	yes
@@ -114,10 +137,10 @@ AT4G39363	WT	hy5	OK	11180.5	2136.42	yes
 AT3G06895	WT	hy5	OK	9823.28	2143.76	yes
 </pre>
 
-OK, now we have the 10 most abundant genes in sample1.  However, the question was "What are the 20 genes with the highest expression levels in sample 1...".  We can get the top 20 by adding the ***-20*** flag to ***head***.  Note that we were asked for the gene, not the gene plus data.  We can use ***cut*** to extract what we want.  The ***-f1*** arument tor ***cut*** tells it to grab the first column.
+OK, now we have the 10 most abundant genes in sample 1.  However, the question was "What are the 20 genes with the highest expression levels in sample 1...".  We can get the top 20 by adding the ***-20*** argument to ***head***.  Note also that we were asked for the gene, not the gene plus data.  We can use ***cut*** to extract what we want.  The ***-f1*** arument tells it to grab the first column.
 
 <pre>
-$ grep 'yes' gene_exp.txt | sort -k5nr | head -20 | cut -f1
+$ grep 'yes' gene_exp.txt | sort -k5 -n -r | head -20 | cut -f1
 AT2G01021
 AT1G08115
 ATCG00010
@@ -150,7 +173,7 @@ Consider the log file access_log.  The exact format of the file can be customize
 
 Your task is to find the top 10 users of the web site over the past hour.
 
-#### How many lines in the file (ie, how many times was the web site accesses in the time perdio covered by this file)?
+#### How many lines in the file (ie, how many times was the web site accesses in the time period covered by this file)?
 
 <pre>
 $ wc -l access_log 
@@ -199,10 +222,10 @@ Now we have the text isolated.
 
 Remember that the first section of each line is the the address of the browser.  The file is not tab-delimited, but we can use the ***-d' '*** argument for ***cut*** to tell it to use space as the delimiter.
 
-Let's check first:
+Let's check first by piping the output to ***head***:
 
 <pre>
-$ tail -3974 access_log | cut -d' ' -f1 |head
+$ tail -3974 access_log | cut -d' ' -f1 | head
 146.185.30.53
 5.10.83.18
 90.83.115.106
@@ -249,10 +272,10 @@ $ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | head
 
 
 # Who are the the ten users between 11-12?
-We can find out by another round of sorting at the end.
+We can find out with another round of sorting at the end. Note that the last sort is numeric, in reverse (descending) order.
 
 <pre>
-$ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | sort -nr | head
+$ tail -3974 access_log | cut -d' ' -f1 | sort | uniq -c | sort -n -r | head
  349 mrcbloxx.le.ac.uk
  270 se-bravo.psycho.unibas.ch
  256 hx-dnat-245.ebi.ac.uk
